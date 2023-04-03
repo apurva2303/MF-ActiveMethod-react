@@ -1,24 +1,28 @@
-import logo from './logo.svg';
 import './App.css';
+import ConventionalPortfolio from './components/conventional/conventional_portfolio';
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import Individual_fund from './components/conventional/individual_fund';
+import { funds_urls } from './components/conventional/logic';
+
 
 function App() {
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path='/' element={<ConventionalPortfolio />} />
+
+        {Object.keys(funds_urls).map((item, i) => (
+          <Route key={i} path={`/${item}`} element={<Individual_fund fund={`${item}`} />} />
+        ))}
+{/* 
+        <Route path='/gold' element={<Individual_fund fund="gold" />} />
+        <Route path='/nifty_jr' element={<Individual_fund fund="nifty_jr" />} />
+        <Route path='/sensex' element={<Individual_fund fund="sensex" />} />
+        <Route path='/international' element={<Individual_fund fund="international" />} /> */}
+
+      </Routes>
+    </BrowserRouter>
   );
 }
 
