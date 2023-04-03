@@ -7,7 +7,6 @@ import {
     date_to_ddmmyyyy,
     check_date_for_holiday,
     check_first_date_of_month,
-    handle_date_range_change
 } from "./logic.js";
 
 function Individual_fund(props) {
@@ -39,7 +38,7 @@ function Individual_fund(props) {
         const current_fund_url = funds_urls[`${fund}`];
         const all_NAV_data = await fetch_NAV(current_fund_url);
 
-        var month = 0;
+        var month = 1;
         var cost = 0;
         var units = 0;
         var investment_value = 0;
@@ -70,7 +69,7 @@ function Individual_fund(props) {
             const day_NAV_data = all_NAV_data.find((obj) => obj.date === ddmmyyyy)
             const NAV_of_day = day_NAV_data.nav;
 
-            console.log(ddmmyyyy, current_date, new Date(end_date));
+            // console.log(ddmmyyyy, current_date, new Date(end_date));
 
 
             const month_investment_update = check_first_date_of_month(
