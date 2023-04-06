@@ -37,15 +37,12 @@ async function fetch_fund_name(url) {
 }
 
 function date_to_ddmmyyyy(date) {
-    console.log(date);
-    
+        
     var dd = date.getDate().toString().padStart(2, '0');
     var mm = (date.getMonth() + 1).toString().padStart(2, '0');
     var yyyy = date.getFullYear();
 
     var ddmmyyyy = `${dd}-${mm}-${yyyy}`;
-
-    console.log(ddmmyyyy);
 
     return ddmmyyyy;
 

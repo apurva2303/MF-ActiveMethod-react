@@ -1,17 +1,32 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { funds_urls } from './logic';
+import { useNavigate } from 'react-router-dom';
 
 
-export default function ConventionalPortfolio() {
+
+export default function ConventionalPortfolio(props) {
+
+    const navigate = useNavigate();
 
     const [start_date, set_start_date] = useState('');
     const [end_date, set_end_date] = useState('');
+    const full_data = [];
 
+    const handleStart = async () => {
 
-    const handleStart = () => {
-        // Click all the individual fund's start button
-        // click_all_start_buttons(start_date, end_date);
+        // Navigate to all the routes one by one.
+        {
+            Object.keys(funds_urls).map((item, i) => {
+                navigate(`/${item}`, {state: { startDate: start_date, endDate: end_date, fullData : full_data}}); // startDate and endDate are the parameters I am sending to navigated paths.
+                // Get the input tags, fill them and click start button
+            })
+        }
+
     }
+
+    // useEffect(() => {
+    //     console.log(full_data);
+    // })
 
 
     return (
@@ -26,18 +41,20 @@ export default function ConventionalPortfolio() {
             </ul>
 
             <label>Start Date</label>
-            <input name="start_date" type="date" />
+            <input onChange={(e) => set_start_date(e.target.value)} name="start_date" type="date" />
+
             <label>End Date</label>
-            <input name="end_date" type="date" />
-            <button id="date_range_submit">Submit</button>
+            <input onChange={(e) => set_end_date(e.target.value)} name="end_date" type="date" />
 
+            <button onClick={handleStart} className="start">Start</button>
 
-            <button onClick={handleStart} >Start</button>
             <table>
                 <thead>
-                    <td>Date</td>
-                    <td>Cost</td>
-                    <td>Value</td>
+                    <tr>
+                        <td>Date</td>
+                        <td>Cost</td>
+                        <td>Value</td>
+                    </tr>
                 </thead>
             </table>
         </div>

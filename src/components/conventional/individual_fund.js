@@ -9,15 +9,36 @@ import {
     check_first_date_of_month,
 } from "./logic.js";
 
+import { useLocation } from 'react-router-dom';
+
+
 function Individual_fund(props) {
     const [fund, setFund] = useState('');
     const [start_date, set_start_date] = useState('');
     const [end_date, set_end_date] = useState('');
     const [tableData, setTableData] = useState([]);
+    const [start_button_clicked, set_start_button_clicked] = useState(false);
+
+    const location = useLocation();
+
+    const handleNavigation = () => {
+        
+        // Populate input tags and click start button
+        set_start_date(location.state.startDate);
+        set_end_date(location.state.endDate);
+        handleStart();
+        
+        // location.state.fullData.push(tableData)
+    }
 
     useEffect(() => {
         setFund(props.fund);
-    }, []);
+
+        if(location.state){
+            handleNavigation();
+        }
+
+    }, [fund]);
 
     const DisplayTableData = tableData?.map((item, index) => {
         return (
@@ -35,7 +56,10 @@ function Individual_fund(props) {
 
     const handleStart = async () => {
 
+        set_start_button_clicked(true);
+
         const current_fund_url = funds_urls[`${fund}`];
+
         const all_NAV_data = await fetch_NAV(current_fund_url);
 
         var month = 1;
@@ -106,10 +130,9 @@ function Individual_fund(props) {
             newTableData.push(newObj);
         }
 
-        console.log("Loaded...");
-
-
         setTableData(newTableData);
+
+        set_start_button_clicked(false);
     }
 
 
@@ -118,10 +141,10 @@ function Individual_fund(props) {
             <h1>Conventional Method - Individual Fund Logic ({fund})</h1>
 
             <label>Start Date</label>
-            <input onChange={(e) => set_start_date(e.target.value)} name="start_date" type="date" />
+            <input onChange={(e) => set_start_date(e.target.value)} value={start_date} name="start_date" type="date" />
 
             <label>End Date</label>
-            <input onChange={(e) => set_end_date(e.target.value)} name="end_date" type="date" />
+            <input onChange={(e) => set_end_date(e.target.value)} value={end_date} name="end_date" type="date" />
 
             <button onClick={handleStart} className="start">Start</button>
 
