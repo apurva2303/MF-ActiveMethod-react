@@ -11,34 +11,16 @@ import {
 
 import { useLocation } from 'react-router-dom';
 
-
 function Individual_fund(props) {
     const [fund, setFund] = useState('');
     const [start_date, set_start_date] = useState('');
     const [end_date, set_end_date] = useState('');
     const [tableData, setTableData] = useState([]);
-    const [start_button_clicked, set_start_button_clicked] = useState(false);
 
-    const location = useLocation();
-
-    const handleNavigation = () => {
-        
-        // Populate input tags and click start button
-        set_start_date(location.state.startDate);
-        set_end_date(location.state.endDate);
-        handleStart();
-        
-        // location.state.fullData.push(tableData)
-    }
 
     useEffect(() => {
         setFund(props.fund);
-
-        if(location.state){
-            handleNavigation();
-        }
-
-    }, [fund]);
+    });
 
     const DisplayTableData = tableData?.map((item, index) => {
         return (
@@ -55,8 +37,6 @@ function Individual_fund(props) {
     });
 
     const handleStart = async () => {
-
-        set_start_button_clicked(true);
 
         const current_fund_url = funds_urls[`${fund}`];
 
@@ -132,7 +112,6 @@ function Individual_fund(props) {
 
         setTableData(newTableData);
 
-        set_start_button_clicked(false);
     }
 
 
