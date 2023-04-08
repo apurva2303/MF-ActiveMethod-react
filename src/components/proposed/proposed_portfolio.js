@@ -6,9 +6,10 @@ import {
     date_to_ddmmyyyy,
     check_date_for_holiday,
     check_first_date_of_month,
+    redemption,
 } from "./logic.js";
 
-export default function Proposed_portfolio () {
+export default function Proposed_portfolio() {
 
     const [investment_kitty, set_investment_kitty] = useState(0);
     const [total_monthly_SIP_amt, set_total_monthly_SIP_amt] = useState(0);
@@ -17,14 +18,15 @@ export default function Proposed_portfolio () {
     const [allFundsData, setAllFundData] = useState([]);
     const [tableData, setTableData] = useState([]);
 
+    // console.log(allFundsData);
+
     // If investement kitty goes negative, an alert is thrown, everytime investment_kitty is changed
     useEffect(() => {
-        if(investment_kitty < 0){
+        if (investment_kitty < 0) {
             alert("Investment Kitty is running negative!");
         }
     }, [investment_kitty]);
 
-    console.log("allFundsData", allFundsData);
 
     // Function doing all calculations for a fund after the "start" button click
     const TableDataCalc = async (fund) => {
@@ -38,8 +40,11 @@ export default function Proposed_portfolio () {
         var investment_value = 0;
         var avg_NAV = 0;
         var NAV_growth;
+        var first_transaction_NAV;
+        var transation_level_NAV_growth;
+        var dates_of_active_investments = [];
         const number_of_funds = Object.keys(funds_urls).length
-        const SIP_individual_fund = total_monthly_SIP_amt/number_of_funds;
+        const SIP_individual_fund = total_monthly_SIP_amt / number_of_funds;
 
         const newTableData = {
             fund: fund,
@@ -53,6 +58,7 @@ export default function Proposed_portfolio () {
         ) {
 
             var invested = 0;
+            var redeemed_amt = 0;
 
             // If current date is a holiday, then continue to next iteration. Else proceed:
             if (check_date_for_holiday(current_date, all_NAV_data)) {
@@ -64,6 +70,8 @@ export default function Proposed_portfolio () {
             const day_NAV_data = all_NAV_data.find((obj) => obj.date === ddmmyyyy)
             const NAV_of_day = day_NAV_data.nav;
 
+
+            // If first date of month, then invest within this function
             const month_investment_update = check_first_date_of_month(
                 current_date,
                 month,
@@ -71,22 +79,51 @@ export default function Proposed_portfolio () {
                 cost,
                 NAV_of_day,
                 units,
-                invested
+                invested,
+                dates_of_active_investments
             );
 
-            // If first date of month, then invest within this function
             month = current_date.getMonth();
-
             cost = month_investment_update[0];
             units = month_investment_update[1];
             invested = month_investment_update[2];
+            dates_of_active_investments = month_investment_update[3];
 
 
             investment_value = (units * NAV_of_day).toFixed(4);
             avg_NAV = cost / units;
             NAV_growth = (((NAV_of_day - avg_NAV) / avg_NAV) * 100).toFixed(2);
 
-            // populate_table();
+
+            //If there is any left transaction to be redeemed then:
+            if (dates_of_active_investments.length > 0) {
+                first_transaction_NAV = all_NAV_data.find((obj) => obj.date === dates_of_active_investments[0]).nav;
+                transation_level_NAV_growth = ((NAV_of_day - first_transaction_NAV) / first_transaction_NAV) * 100;
+
+                // Call the redemption function to see the redeemed amount on current date if applicable o/w 0;
+                const daily_redemption_update = redemption(
+                    fund,
+                    current_date,
+                    Number(NAV_growth),
+                    transation_level_NAV_growth,
+                    redeemed_amt,
+                    NAV_of_day,
+                    dates_of_active_investments,
+                    newTableData,
+                    cost,
+                    units
+                )
+
+                redeemed_amt = daily_redemption_update[0];
+                dates_of_active_investments = daily_redemption_update[1];
+                cost = daily_redemption_update[2];
+                units = daily_redemption_update[3];
+            }
+
+            // Update Investment Kitty according to investment and redemption:
+            set_investment_kitty(investment_kitty - invested + redeemed_amt);
+
+
             let newObj = {
                 ddmmyyyy: ddmmyyyy,
                 NAV_of_day: NAV_of_day,
@@ -95,14 +132,18 @@ export default function Proposed_portfolio () {
                 units: units,
                 avg_NAV: avg_NAV,
                 NAV_growth: NAV_growth,
-                invested: invested,  
+                transation_level_NAV_growth: transation_level_NAV_growth,
+                investment_kitty_contribution: (redeemed_amt - invested)
             }
+
             newTableData["data"].push(newObj);
         }
 
+        console.log(newTableData);
+        console.log(dates_of_active_investments);
+
         setAllFundData(oldArray => [...oldArray, newTableData]);
     }
-
 
 
     // Handler of the "start" button, calls function for table data calculation for each fund:
@@ -116,7 +157,7 @@ export default function Proposed_portfolio () {
 
     return (
         <div>
-            <input type="number" name="investment_kitty"  placeholder="Investment Kitty" onChange={(e) => set_investment_kitty(e.target.value)} />
+            <input type="number" name="investment_kitty" placeholder="Investment Kitty" onChange={(e) => set_investment_kitty(e.target.value)} />
             <input type="number" name="total_monthly_SIP_amt" onChange={(e) => set_total_monthly_SIP_amt(e.target.value)} placeholder="Total monthly SIP" />
 
             <label>Start Date</label>

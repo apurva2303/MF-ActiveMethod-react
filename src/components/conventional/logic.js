@@ -7,7 +7,7 @@ const funds_urls = {
 }
 
 // SIP:
-const SIP_amount = 1000;
+const SIP_amount = 125;
 
 // Fetching the full NAV data:
 async function fetch_NAV(url) {
