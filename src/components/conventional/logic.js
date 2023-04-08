@@ -84,62 +84,6 @@ function handle_date_range_change() {
     }
 }
 
-// function click_all_start_buttons(start_date, end_date) {
-//     const allReturnedData = document.createElement('div');
-
-//     const htmlFiles = [
-//         `ConventionalMethod-nifty_jr.html`,
-//         `ConventionalMethod-sensex.html`,
-//         `ConventionalMethod-gold.html`,
-//         `ConventionalMethod-international.html`
-//     ]; // array of all the HTML files
-
-//     htmlFiles.forEach(file => {
-//         fetch(file)
-//             .then(response => response.text())
-//             .then(data => {
-
-//                 const parser = new DOMParser();
-//                 const dom = parser.parseFromString(data, 'text/html');
-
-//                 // Find the date input tags
-//                 const startDateInput = dom.querySelectorAll('input[name="start_date"]')[0];
-//                 const endDateInput = dom.querySelectorAll('input[name="end_date"]')[0];
-
-//                 // Setting the values of date input tags:
-//                 startDateInput.value = start_date;
-//                 endDateInput.value = end_date;
-
-//                 const startButton = dom.querySelector('.start');
-//                 startButton.click();
-
-
-//                 // Wait for the table data to be loaded
-//                 const tableDataPromise = new Promise(resolve => {
-//                     const checkTableData = setInterval(() => {
-//                         const table = dom.querySelector('#fund_table tbody');
-//                         if (table && table.innerHTML !== '') {
-//                             clearInterval(checkTableData);
-//                             resolve(table.innerHTML);
-//                         }
-//                     }, 250);
-//                 });
-
-//                 // Once the table data is loaded, append it to the temporary element
-//                 tableDataPromise.then(tableData => {
-//                     allReturnedData.innerHTML += `<table>${tableData}</table>`;
-//                     console.log(allReturnedData);
-//                 });
-//             })
-//             .catch(error => {
-//                 console.error(`Error fetching ${htmlFile}:`, error);
-//             });
-//     });
-
-
-
-// }
-
 
 // Exporting all the functions and data
 export {

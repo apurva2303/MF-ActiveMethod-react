@@ -122,15 +122,6 @@ export default function ConventionalPortfolio(props) {
         return (
             <tr className="text-light table-cell" key={index}>
                 <td>{item.date}</td>
-                {/* {Object.keys(funds_urls).map((fund_name) => {
-                    return (
-                        <>
-                            <td>{item}.{fund_name}.cost</td>
-                            <td>{item}.{fund_name}.value</td>
-                        </>
-                    )
-                })} */}
-
                 {Object.keys(funds_urls).map((fund_name) => {
                     return (
                         <>
@@ -154,21 +145,6 @@ export default function ConventionalPortfolio(props) {
 
         var largest_fund_data = find_largest_array(allFundsData);
         const ddmmyyyyValues = largest_fund_data.map(obj => obj.ddmmyyyy);
-
-        // Making an object for last populated row
-        // var lastFoundTableRowObj = {
-        //     date: start_date,
-        //     portfolio: {
-        //         cost: 0,
-        //         value: 0
-        //     }
-        // };
-        // Object.keys(funds_urls).map((item) => {
-        //     lastFoundTableRowObj[item] = {
-        //         cost: 0,
-        //         value: 0
-        //     }
-        // })
 
         let oldObj = {
             date: start_date,
@@ -234,10 +210,6 @@ export default function ConventionalPortfolio(props) {
                 cost: cost_sum,
                 value: value_sum
             }
-
-            // lastFoundTableRowObj = newObj;
-            // console.log(newObj);
-
 
             newArray.push(newObj);
 
