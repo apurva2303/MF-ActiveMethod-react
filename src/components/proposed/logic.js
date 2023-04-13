@@ -63,17 +63,20 @@ function check_date_for_holiday(date, all_NAV_data) {
 
 }
 
-function check_first_date_of_month(date, month, SIP, cost, NAV, units, invested, dates_of_investment) {
+function check_first_date_of_month(date, month, SIP, cost, NAV, cum_units, invested_amt, dates_of_investment) {
+
+    let units_bought = 0;
 
     if (month !== date.getMonth()) {
         //Invest
         cost += SIP;
-        units += SIP / NAV;
-        invested = SIP;
+        units_bought = SIP / NAV;
+        cum_units += units_bought;
+        invested_amt = SIP;
         dates_of_investment.push(date_to_ddmmyyyy(date));
     }
 
-    const result = [cost, units, invested, dates_of_investment]
+    const result = [cost, cum_units, invested_amt, dates_of_investment, units_bought]
 
     return result;
 }
@@ -87,30 +90,32 @@ function handle_date_range_change() {
 }
 
 
-function redemption(
+function portfolio_redemption(
     fund,
     date,
     total_NAV_growth,
-    transation_level_NAV_growth,
+    transaction_level_NAV_growth,
     redeemed_amt,
     NAV_of_day,
     dates_of_active_investments,
     fund_transaction_data,
     cost,
-    units,
+    cum_units,
 ) {
 
-    let first_date_of_investment = dates_of_active_investments[0];
+    if (total_NAV_growth >= total_NAV_growth_check) {
 
-    if (total_NAV_growth >= growth) {
-        if (transation_level_NAV_growth >= growth) {
+        while (transaction_level_NAV_growth >= transaction_NAV_growth_check) {
+            console.log(dates_of_active_investments);
 
-            //redeem the first investment:       
+            // redeem the first investment:      
+
+            let first_date_of_investment = dates_of_active_investments[0];
 
             let first_investment_obj = fund_transaction_data.data.find((obj) => obj.ddmmyyyy === first_date_of_investment);
 
             // Find the first units bought using fund_transaction_data
-            let redeemed_units = first_investment_obj.units;
+            let redeemed_units = first_investment_obj.units_bought;
             redeemed_amt += redeemed_units * NAV_of_day;
 
             console.log("=========================");
@@ -119,40 +124,103 @@ function redemption(
             console.log("Today's NAV = ", NAV_of_day);
             console.log("Investment of = ", dates_of_active_investments[0]);
             console.log("NAV growth = ", total_NAV_growth);
-            console.log("Transactional NAV growth = ", transation_level_NAV_growth);
+            console.log("Transactional NAV growth = ", transaction_level_NAV_growth);
             console.log("=========================")
 
 
             // POP the last transaction from the dates array and fund_transaction_data
             dates_of_active_investments.shift();
-            cost -= first_investment_obj.cost;
-            units -= redeemed_units;
+            cost -= first_investment_obj.invested_amt;
+            cum_units -= redeemed_units;
 
-            let avg_NAV = cost / units;
-            total_NAV_growth = (((NAV_of_day - avg_NAV) / avg_NAV) * 100);
-            transation_level_NAV_growth = ((NAV_of_day - dates_of_active_investments[0]) / dates_of_active_investments[0]) * 100;
-
-            // recursively calling redemption
-            redemption(
-                fund,
-                date,
-                total_NAV_growth,
-                transation_level_NAV_growth,
-                redeemed_amt,
-                NAV_of_day,
-                dates_of_active_investments,
-                fund_transaction_data,
-                cost,
-                units
-            );
+            if (dates_of_active_investments.length > 0) {
+                let NAV_of_next_investment_date = fund_transaction_data.data.find((obj) => obj.ddmmyyyy === dates_of_active_investments[0]).NAV_of_day;
+                transaction_level_NAV_growth = ((Number(NAV_of_day) - Number(NAV_of_next_investment_date)) / Number(NAV_of_next_investment_date)) * 100;
+            }
+            else {
+                break;
+            }
         }
     }
 
-    return [redeemed_amt, dates_of_active_investments, cost, units];
+    return [redeemed_amt, dates_of_active_investments, cost, cum_units];
 }
 
-const growth = 10;
 
+function fund_redemption(
+    date,
+    total_NAV_growth,
+    transaction_level_NAV_growth,
+    redeemed_amt,
+    NAV_of_day,
+    dates_of_active_investments,
+    fund_transaction_data,
+    cost,
+    cum_units,
+) {
+
+
+    if (total_NAV_growth >= total_NAV_growth_check) {
+
+        while (transaction_level_NAV_growth >= transaction_NAV_growth_check) {
+
+            // redeem the first investment:      
+
+            let first_date_of_investment = dates_of_active_investments[0];
+
+            let first_investment_obj = fund_transaction_data.find((obj) => obj.ddmmyyyy === first_date_of_investment);
+
+            // Find the first units bought using fund_transaction_data
+            let redeemed_units = first_investment_obj.units_bought;
+            redeemed_amt += redeemed_units * NAV_of_day;
+
+            console.log("=========================");
+            console.log("popped on = ", date_to_ddmmyyyy(date));
+            console.log("Investment of = ", dates_of_active_investments[0]);
+            console.log("Today's NAV = ", NAV_of_day);
+            console.log('Redeemed Number of Units = ', redeemed_units);
+            console.log("Redeemed Amount = ", redeemed_amt);
+            console.log("Remaining Units = ", cum_units - redeemed_units);
+            console.log("NAV growth = ", total_NAV_growth);
+            console.log("Transactional NAV growth = ", transaction_level_NAV_growth);
+            console.log("=========================");
+
+
+            // POP the last transaction from the dates array and fund_transaction_data
+            dates_of_active_investments.shift();
+            cost -= first_investment_obj.invested_amt;
+            cum_units -= redeemed_units;
+
+
+            if (dates_of_active_investments.length > 0) {
+                let NAV_of_next_investment_date = fund_transaction_data.find((obj) => obj.ddmmyyyy === dates_of_active_investments[0]).NAV_of_day;
+                transaction_level_NAV_growth = ((Number(NAV_of_day) - Number(NAV_of_next_investment_date)) / Number(NAV_of_next_investment_date)) * 100;
+            }
+            else {
+                break;
+            }
+        }
+    }
+
+    return [redeemed_amt, dates_of_active_investments, cost, cum_units];
+}
+
+const total_NAV_growth_check = 10;
+const transaction_NAV_growth_check = 10;
+
+
+// Takes the allFundsData array and returns the largest "data" array:
+const find_largest_array = (array_of_arrays) => {
+    var largest_array = array_of_arrays[0].data;
+    for (let i = 0; i < array_of_arrays.length; i++) {
+        if (largest_array.length < array_of_arrays[i].data.length) {
+            largest_array = array_of_arrays[i].data;
+        }
+    }
+
+    return largest_array;
+
+}
 
 // Exporting all the functions and data
 export {
@@ -164,5 +232,7 @@ export {
     check_date_for_holiday,
     check_first_date_of_month,
     handle_date_range_change,
-    redemption
+    portfolio_redemption,
+    fund_redemption,
+    find_largest_array
 }

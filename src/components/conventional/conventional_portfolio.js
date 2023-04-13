@@ -147,7 +147,7 @@ export default function ConventionalPortfolio(props) {
         const ddmmyyyyValues = largest_fund_data.map(obj => obj.ddmmyyyy);
 
         let oldObj = {
-            date: start_date,
+            date: date_to_ddmmyyyy(new Date(start_date)),
         }
         Object.keys(funds_urls).map((item) => {
             oldObj[item] = {
@@ -162,11 +162,11 @@ export default function ConventionalPortfolio(props) {
             let cost_sum = 0;
             let value_sum = 0;
 
+            console.log(cost_sum)
+
             let newObj = {
                 date: date,
             }
-
-            console.log(oldObj);
 
             // console.log(date);
 
@@ -199,8 +199,6 @@ export default function ConventionalPortfolio(props) {
                         cost: oldObj[fundObj.fund].cost,
                         value: Number(oldObj[fundObj.fund].value)
                     }
-
-                    console.log(`No object found for ${date} in fund ${fundObj.fund}`);
                 }
 
                 oldObj = Object.assign({}, newObj);
@@ -234,7 +232,7 @@ export default function ConventionalPortfolio(props) {
             <p>Get the detailed table for:</p>
             <ul>
                 {Object.keys(funds_urls).map((item, i) => (
-                    <li key={i}><a href={`/${item}`}>{item}</a></li>
+                    <li key={i}><a href={`/conventional/${item}`}>{item}</a></li>
                 ))}
             </ul>
 

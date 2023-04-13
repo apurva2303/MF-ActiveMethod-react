@@ -11,7 +11,7 @@ import {
 
 import { useLocation } from 'react-router-dom';
 
-function Individual_fund(props) {
+function Conventional_Individual_fund(props) {
     const [fund, setFund] = useState('');
     const [start_date, set_start_date] = useState('');
     const [end_date, set_end_date] = useState('');
@@ -149,4 +149,4 @@ function Individual_fund(props) {
     )
 }
 
-export default Individual_fund;
+export default Conventional_Individual_fund;
