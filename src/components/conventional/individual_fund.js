@@ -42,7 +42,7 @@ function Conventional_Individual_fund(props) {
 
         const all_NAV_data = await fetch_NAV(current_fund_url);
 
-        var month = 1;
+        var month = -1;
         var cost = 0;
         var units = 0;
         var investment_value = 0;

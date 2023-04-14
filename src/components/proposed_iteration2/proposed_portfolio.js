@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
 import {
     funds_urls,
+    fund_investment_dates,
     fetch_NAV,
     date_to_ddmmyyyy,
     check_date_for_holiday,
-    check_first_date_of_month,
+    check_date_for_investment,
     portfolio_redemption as redemption,
     find_largest_array
 } from "./logic.js";
 
-export default function Proposed_portfolio() {
+export default function Proposed_2_portfolio() {
 
     const [investment_kitty, set_investment_kitty] = useState(0);
     const [total_monthly_SIP_amt, set_total_monthly_SIP_amt] = useState(0);
@@ -74,16 +75,8 @@ export default function Proposed_portfolio() {
                     portfolio_value += Number(foundObject.investment_value);
                     portfolio_investment_kitty_contribution += foundObject.investment_kitty_contribution;
 
-                    // oldObj = Object.assign({}, foundObject);
-
                 }
-                // else {
 
-                //     console.log(oldObj.cost, "for", fundObj.fund, "on", date);
-                //     portfolio_cost += Number(oldObj.cost);
-                //     portfolio_value += Number(oldObj.investment_value);
-                //     portfolio_investment_kitty_contribution += oldObj.investment_kitty_contribution
-                // }
 
             });
 
@@ -151,7 +144,8 @@ export default function Proposed_portfolio() {
 
 
             // If first date of month, then invest within this function
-            const month_investment_update = check_first_date_of_month(
+            const month_investment_update = check_date_for_investment(
+                fund,
                 current_date,
                 month,
                 Number(SIP_individual_fund),
@@ -162,12 +156,15 @@ export default function Proposed_portfolio() {
                 dates_of_active_investments
             );
 
-            month = current_date.getMonth();
             cost = month_investment_update[0];
             cum_units = month_investment_update[1];
             invested_amt = month_investment_update[2];
             dates_of_active_investments = month_investment_update[3];
             units_bought = month_investment_update[4];
+
+            if (Number(fund_investment_dates[fund]) <= current_date.getDate()) {
+                month = current_date.getMonth();
+            }
 
 
             investment_value = (cum_units * NAV_of_day).toFixed(4);
@@ -262,16 +259,17 @@ export default function Proposed_portfolio() {
     return (
         <div>
 
-            <h1>Proposed Method - Portfolio</h1>
+            <h1>Proposed Method (2nd Iteration) - Portfolio</h1>
 
             <p>Get the detailed table for:</p>
             <ul>
                 {Object.keys(funds_urls).map((item, i) => (
-                    <li key={i}><a href={`/proposed/${item}`}>{item}</a></li>
+                    <li key={i}><a href={`/proposed2/${item}`}>{item}</a></li>
                 ))}
             </ul>
 
             <form onSubmit={handleStart}>
+
                 <input type="number" name="investment_kitty" placeholder="Investment Kitty" onChange={(e) => set_investment_kitty(e.target.value)} />
                 <input type="number" name="total_monthly_SIP_amt" onChange={(e) => set_total_monthly_SIP_amt(e.target.value)} placeholder="Total monthly SIP" />
 

@@ -47,7 +47,7 @@ function Proposed_Individual_fund(props) {
 
         const all_NAV_data = await fetch_NAV(current_fund_url);
 
-        var month = 1;
+        var month = -1;
         var cost = 0;
         var cum_units = 0;
         var units_bought = 0;
@@ -165,7 +165,7 @@ function Proposed_Individual_fund(props) {
 
     return (
         <>
-            <h1>Conventional Method - Individual Fund Logic ({fund})</h1>
+            <h1>Proposed Method - Individual Fund Logic ({fund})</h1>
 
             <input type="number" name="total_monthly_SIP_amt" onChange={(e) => set_total_monthly_SIP_amt(e.target.value)} placeholder="Total monthly SIP" />
 
