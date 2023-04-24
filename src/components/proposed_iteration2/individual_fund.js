@@ -17,6 +17,9 @@ function Proposed_Individual_fund(props) {
     const [start_date, set_start_date] = useState('');
     const [end_date, set_end_date] = useState('');
     const [tableData, setTableData] = useState([]);
+    const [total_nav_growth_check, set_total_nav_growth_check] = useState(0);
+    const [transactional_nav_growth_check, set_transactional_nav_growth_check] = useState(0);
+
 
     useEffect(() => {
         setFund(props.fund);
@@ -132,7 +135,9 @@ function Proposed_Individual_fund(props) {
                     dates_of_active_investments,
                     newTableData,
                     cost,
-                    cum_units
+                    cum_units,
+                    total_nav_growth_check,
+                    transactional_nav_growth_check
                 )
 
                 redeemed_amt = daily_redemption_update[0];
@@ -173,6 +178,9 @@ function Proposed_Individual_fund(props) {
             <h1>Proposed (2nd Iteration) Method - Individual Fund Logic ({fund})</h1>
 
             <input type="number" name="total_monthly_SIP_amt" onChange={(e) => set_total_monthly_SIP_amt(e.target.value)} placeholder="Total monthly SIP" />
+            <input type="number" name="total_NAV_growth_check" onChange={(e) => set_total_nav_growth_check(e.target.value)} placeholder="Total NAV Growth Percent" />
+            <input type="number" name="transactional_NAV_growth_check" onChange={(e) => set_transactional_nav_growth_check(e.target.value)} placeholder="Total NAV Growth Percent" />
+
 
             <label>Start Date</label>
             <input onChange={(e) => set_start_date(e.target.value)} value={start_date} name="start_date" type="date" />

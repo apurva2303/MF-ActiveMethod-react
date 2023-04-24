@@ -7,7 +7,7 @@ import Proposed_portfolio from './components/proposed/proposed_portfolio';
 import Proposed_2_Individual_fund from './components/proposed_iteration2/individual_fund';
 import Proposed_2_portfolio from './components/proposed_iteration2/proposed_portfolio';
 import Home from './components/home';
-import { funds_urls } from './components/conventional/logic';
+import { funds_urls } from './components/proposed_iteration2/logic';
 import { useState } from 'react';
 
 

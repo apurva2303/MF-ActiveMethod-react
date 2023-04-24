@@ -18,6 +18,8 @@ export default function Proposed_2_portfolio() {
     const [end_date, set_end_date] = useState('');
     const [allFundsData, setAllFundData] = useState([]);
     const [tableData, setTableData] = useState([]);
+    const [total_nav_growth_check, set_total_nav_growth_check] = useState(0);
+    const [transactional_nav_growth_check, set_transactional_nav_growth_check] = useState(0);
 
     const debt_interest_rate = 0.05;
 
@@ -188,7 +190,9 @@ export default function Proposed_2_portfolio() {
                     dates_of_active_investments,
                     newTableData,
                     cost,
-                    cum_units
+                    cum_units,
+                    total_nav_growth_check,
+                    transactional_nav_growth_check
                 )
 
                 redeemed_amt = daily_redemption_update[0];
@@ -272,6 +276,8 @@ export default function Proposed_2_portfolio() {
 
                 <input type="number" name="investment_kitty" placeholder="Investment Kitty" onChange={(e) => set_investment_kitty(e.target.value)} />
                 <input type="number" name="total_monthly_SIP_amt" onChange={(e) => set_total_monthly_SIP_amt(e.target.value)} placeholder="Total monthly SIP" />
+                <input type="number" name="total_NAV_growth_check" onChange={(e) => set_total_nav_growth_check(e.target.value)} placeholder="Total NAV Growth Percent" />
+                <input type="number" name="transactional_NAV_growth_check" onChange={(e) => set_transactional_nav_growth_check(e.target.value)} placeholder="Total NAV Growth Percent" />
 
                 <label>Start Date</label>
                 <input onChange={(e) => set_start_date(e.target.value)} name="start_date" type="date" />

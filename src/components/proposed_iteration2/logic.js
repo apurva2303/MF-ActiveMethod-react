@@ -1,16 +1,46 @@
 // List of all funds in portfolio (URLs)
 const funds_urls = {
-    "nifty_jr": 'https://api.mfapi.in/mf/118348',
-    "sensex": 'https://api.mfapi.in/mf/119287',
-    "gold": 'https://api.mfapi.in/mf/116795',
-    "international": 'https://api.mfapi.in/mf/120186',
+    "idbi_nifty_jr_index_fund": "https://api.mfapi.in/mf/118348",
+    "ICICI_prudential_US_blue_chip": "https://api.mfapi.in/mf/120186",
+    "ICICI_prudential_technology_fund": "https://api.mfapi.in/mf/120594",
+    "UTI_transportation_and_logistics_fund": "https://api.mfapi.in/mf/120730",
+    "dsp_worldenergy": "https://api.mfapi.in/mf/119275",
+    "aditya_birla_sunlife_gold_fund": "https://api.mfapi.in/mf/120546",
+    "invesco_india_infrastructure_fund": "https://api.mfapi.in/mf/120405",
+    "MIRAE_asset_great_consumer_fund": "https://api.mfapi.in/mf/118837",
+    "dsp_world_agriculture": "https://api.mfapi.in/mf/119271",
+    "SBI_magnum_global_fund": "https://api.mfapi.in/mf/119711",
+    "TATA_SNP_BSE_sensex_index_fund": "https://api.mfapi.in/mf/119287",
+    "DSP_world_mining": "https://api.mfapi.in/mf/119279",
+    "DSP_natural_resources_and_new_energy_fund": "https://api.mfapi.in/mf/119028",
+    "frankling_Asian_equity": "https://api.mfapi.in/mf/118559",
+    "NIPPON_india_pharma_fund": "https://api.mfapi.in/mf/118759",
+    "DSP_world_gold_fund_of_fund": "https://api.mfapi.in/mf/119277",
+    "ICICI_prudential_banking_and_financial_services_fund": "https://api.mfapi.in/mf/120244",
+    "Sundaram_global_brand": "https://api.mfapi.in/mf/119602",
+    "INVESCO_india_PSU_equity_fund": "https://api.mfapi.in/mf/120395"
 }
 
 const fund_investment_dates = {
-    "nifty_jr": '2',
-    "sensex": '3',
-    "gold": '4',
-    "international": '5',
+    "idbi_nifty_jr_index_fund": "1",
+    "ICICI_prudential_US_blue_chip": "2",
+    "ICICI_prudential_technology_fund": "3",
+    "UTI_transportation_and_logistics_fund": "6",
+    "dsp_worldenergy": "7",
+    "aditya_birla_sunlife_gold_fund": "8",
+    "invesco_india_infrastructure_fund": "9",
+    "MIRAE_asset_great_consumer_fund": "12",
+    "dsp_world_agriculture": "13",
+    "SBI_magnum_global_fund": "14",
+    "TATA_SNP_BSE_sensex_index_fund": "15",
+    "DSP_world_mining": "17",
+    "DSP_natural_resources_and_new_energy_fund": "18",
+    "frankling_Asian_equity": "20",
+    "NIPPON_india_pharma_fund": "21",
+    "DSP_world_gold_fund_of_fund": "23",
+    "ICICI_prudential_banking_and_financial_services_fund": "24",
+    "Sundaram_global_brand": "26",
+    "INVESCO_india_PSU_equity_fund": "27"
 }
 
 // SIP:
@@ -117,6 +147,8 @@ function portfolio_redemption(
     fund_transaction_data,
     cost,
     cum_units,
+    total_NAV_growth_check,
+    transaction_NAV_growth_check
 ) {
 
     if (total_NAV_growth >= total_NAV_growth_check) {
@@ -173,6 +205,8 @@ function fund_redemption(
     fund_transaction_data,
     cost,
     cum_units,
+    total_NAV_growth_check,
+    transaction_NAV_growth_check
 ) {
 
 
@@ -220,9 +254,6 @@ function fund_redemption(
 
     return [redeemed_amt, dates_of_active_investments, cost, cum_units];
 }
-
-const total_NAV_growth_check = 10;
-const transaction_NAV_growth_check = 10;
 
 
 // Takes the allFundsData array and returns the largest "data" array:

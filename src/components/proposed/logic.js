@@ -1,11 +1,25 @@
 // List of all funds in portfolio (URLs)
 const funds_urls = {
-    "nifty_jr": 'https://api.mfapi.in/mf/118348',
-    "sensex": 'https://api.mfapi.in/mf/119287',
-    "gold": 'https://api.mfapi.in/mf/116795',
-    "international": 'https://api.mfapi.in/mf/120186',
+    "idbi_nifty_jr_index_fund": "https://api.mfapi.in/mf/118348",
+    "ICICI_prudential_US_blue_chip": "https://api.mfapi.in/mf/120186",
+    "ICICI_prudential_technology_fund": "https://api.mfapi.in/mf/120594",
+    "UTI_transportation_and_logistics_fund": "https://api.mfapi.in/mf/120730",
+    "dsp_worldenergy": "https://api.mfapi.in/mf/119275",
+    "aditya_birla_sunlife_gold_fund": "https://api.mfapi.in/mf/120546",
+    "invesco_india_infrastructure_fund": "https://api.mfapi.in/mf/120405",
+    "MIRAE_asset_great_consumer_fund": "https://api.mfapi.in/mf/118837",
+    "dsp_world_agriculture": "https://api.mfapi.in/mf/119271",
+    "SBI_magnum_global_fund": "https://api.mfapi.in/mf/119711",
+    "TATA_SNP_BSE_sensex_index_fund": "https://api.mfapi.in/mf/119287",
+    "DSP_world_mining": "https://api.mfapi.in/mf/119279",
+    "DSP_natural_resources_and_new_energy_fund": "https://api.mfapi.in/mf/119028",
+    "frankling_Asian_equity": "https://api.mfapi.in/mf/118559",
+    "NIPPON_india_pharma_fund": "https://api.mfapi.in/mf/118759",
+    "DSP_world_gold_fund_of_fund": "https://api.mfapi.in/mf/119277",
+    "ICICI_prudential_banking_and_financial_services_fund": "https://api.mfapi.in/mf/120244",
+    "Sundaram_global_brand": "https://api.mfapi.in/mf/119602",
+    "INVESCO_india_PSU_equity_fund": "https://api.mfapi.in/mf/120395"
 }
-
 // SIP:
 const SIP_amount = 1000;
 
