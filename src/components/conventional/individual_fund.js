@@ -9,8 +9,6 @@ import {
     check_first_date_of_month,
 } from "./logic.js";
 
-import { useLocation } from 'react-router-dom';
-
 function Conventional_Individual_fund(props) {
     const [fund, setFund] = useState('');
     const [start_date, set_start_date] = useState('');

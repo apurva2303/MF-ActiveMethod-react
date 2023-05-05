@@ -93,11 +93,11 @@ export default function ConventionalPortfolio(props) {
     }
 
 
-    // Everytime the component loads or allFndsData is changed, this function is called:
+    // Everytime the component loads or allFundsData is changed, this function is called:
     useEffect(() => {
 
-        if (allFundsData.length > 0) {
-            populate_table();
+        if (allFundsData[0] !== undefined) {
+            populate_table(allFundsData);
         }
         console.log(tableData)
 
@@ -139,7 +139,7 @@ export default function ConventionalPortfolio(props) {
     });
 
     // Populates the combined table to be displayed on the portfolio page
-    const populate_table = () => {
+    const populate_table = (allFundsData) => {
 
         const newArray = [];
 
@@ -161,8 +161,6 @@ export default function ConventionalPortfolio(props) {
 
             let cost_sum = 0;
             let value_sum = 0;
-
-            console.log(cost_sum)
 
             let newObj = {
                 date: date,
@@ -192,6 +190,7 @@ export default function ConventionalPortfolio(props) {
                 }
                 else {
 
+                    console.log("old obj: ", oldObj, "fundobj", fundObj.fund);
                     cost_sum += oldObj[fundObj.fund].cost;
                     value_sum += Number(oldObj[fundObj.fund].value);
 
@@ -201,6 +200,7 @@ export default function ConventionalPortfolio(props) {
                     }
                 }
 
+                console.log("new obj", newObj)
                 oldObj = Object.assign({}, newObj);
             });
 

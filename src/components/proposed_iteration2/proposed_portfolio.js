@@ -277,7 +277,7 @@ export default function Proposed_2_portfolio() {
                 <input type="number" name="investment_kitty" placeholder="Investment Kitty" onChange={(e) => set_investment_kitty(e.target.value)} />
                 <input type="number" name="total_monthly_SIP_amt" onChange={(e) => set_total_monthly_SIP_amt(e.target.value)} placeholder="Total monthly SIP" />
                 <input type="number" name="total_NAV_growth_check" onChange={(e) => set_total_nav_growth_check(e.target.value)} placeholder="Total NAV Growth Percent" />
-                <input type="number" name="transactional_NAV_growth_check" onChange={(e) => set_transactional_nav_growth_check(e.target.value)} placeholder="Total NAV Growth Percent" />
+                <input type="number" name="transactional_NAV_growth_check" onChange={(e) => set_transactional_nav_growth_check(e.target.value)} placeholder="Transactional NAV Growth Percent" />
 
                 <label>Start Date</label>
                 <input onChange={(e) => set_start_date(e.target.value)} name="start_date" type="date" />

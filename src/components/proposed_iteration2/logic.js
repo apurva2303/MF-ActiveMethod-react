@@ -154,7 +154,7 @@ function portfolio_redemption(
     if (total_NAV_growth >= total_NAV_growth_check) {
 
         while (transaction_level_NAV_growth >= transaction_NAV_growth_check) {
-            console.log(dates_of_active_investments);
+            console.log("redeeming from", dates_of_active_investments);
 
             // redeem the first investment:      
 
@@ -182,6 +182,7 @@ function portfolio_redemption(
             cum_units -= redeemed_units;
 
             if (dates_of_active_investments.length > 0) {
+                console.log(dates_of_active_investments, fund_transaction_data, date)
                 let NAV_of_next_investment_date = fund_transaction_data.data.find((obj) => obj.ddmmyyyy === dates_of_active_investments[0]).NAV_of_day;
                 transaction_level_NAV_growth = ((Number(NAV_of_day) - Number(NAV_of_next_investment_date)) / Number(NAV_of_next_investment_date)) * 100;
             }
