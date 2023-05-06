@@ -182,8 +182,12 @@ function portfolio_redemption(
             cum_units -= redeemed_units;
 
             if (dates_of_active_investments.length > 0) {
-                console.log(dates_of_active_investments, fund_transaction_data, date)
-                let NAV_of_next_investment_date = fund_transaction_data.data.find((obj) => obj.ddmmyyyy === dates_of_active_investments[0]).NAV_of_day;
+                console.log(dates_of_active_investments);
+                console.log(fund_transaction_data.data);
+                console.log(date);
+                let NAV_of_next_investment_date = fund_transaction_data.data.find(
+                    (obj) => obj.ddmmyyyy === dates_of_active_investments[0]
+                ).NAV_of_day;
                 transaction_level_NAV_growth = ((Number(NAV_of_day) - Number(NAV_of_next_investment_date)) / Number(NAV_of_next_investment_date)) * 100;
             }
             else {
@@ -267,7 +271,6 @@ const find_largest_array = (array_of_arrays) => {
     }
 
     return largest_array;
-
 }
 
 // Exporting all the functions and data

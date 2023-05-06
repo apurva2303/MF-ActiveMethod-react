@@ -8,6 +8,7 @@ import {
     date_to_ddmmyyyy,
     check_date_for_holiday,
     check_first_date_of_month,
+    find_largest_array
 } from "./logic.js";
 
 
@@ -20,6 +21,7 @@ export default function ConventionalPortfolio(props) {
 
     const full_data = [];
 
+    // Function storing all the data in the state array allFundsData to be later shown in table
     const TableDataCalc = async (fund) => {
 
         const current_fund_url = funds_urls[`${fund}`];
@@ -31,6 +33,7 @@ export default function ConventionalPortfolio(props) {
         var investment_value = 0;
         var avg_NAV = 0;
         var NAV_growth;
+        // Initializing the newTableData object to store all the transaction data for each fund in the corresponding 'data' key value pair
         const newTableData = {
             fund: fund,
             data: []
@@ -86,7 +89,9 @@ export default function ConventionalPortfolio(props) {
             newTableData["data"].push(newObj);
         }
 
-        setAllFundData(oldArray => [...oldArray, newTableData]);
+        // setAllFundData(oldArray => [...oldArray, newTableData]);
+        return newTableData;
+
         // full_data.push(newTableData);
         // console.log(full_data);
         // setAllFundData(full_data);
@@ -96,26 +101,13 @@ export default function ConventionalPortfolio(props) {
     // Everytime the component loads or allFundsData is changed, this function is called:
     useEffect(() => {
 
-        if (allFundsData[0] !== undefined) {
+        console.log("allFundsData", allFundsData);
+
+        if(allFundsData.length > 0)
             populate_table(allFundsData);
-        }
-        console.log(tableData)
 
     }, [allFundsData])
 
-
-    // Takes the allFundsData array and returns the largest "data" array:
-    const find_largest_array = (array_of_arrays) => {
-        var largest_array = array_of_arrays[0].data;
-        for (let i = 0; i < array_of_arrays.length; i++) {
-            if (largest_array.length < array_of_arrays[i].data.length) {
-                largest_array = array_of_arrays[i].data;
-            }
-        }
-
-        return largest_array;
-
-    }
 
     // Displays the table Data on the table:
     const DisplayData = tableData?.map((item, index) => {
@@ -143,9 +135,12 @@ export default function ConventionalPortfolio(props) {
 
         const newArray = [];
 
+        // Finding the dates from the corresponding data array having the largest length among all the funds
         var largest_fund_data = find_largest_array(allFundsData);
         const ddmmyyyyValues = largest_fund_data.map(obj => obj.ddmmyyyy);
 
+        // oldObj will be used to populate table i.e. previous date's row data, if data for given date isn't available
+        // Initializing oldObj and each fund's data
         let oldObj = {
             date: date_to_ddmmyyyy(new Date(start_date)),
         }
@@ -166,8 +161,7 @@ export default function ConventionalPortfolio(props) {
                 date: date,
             }
 
-            // console.log(date);
-
+            oldObj[date] = date;
 
             // Check for all the funds for the given date:
             allFundsData.forEach((fundObj) => {
@@ -177,7 +171,7 @@ export default function ConventionalPortfolio(props) {
 
                 if (foundObject) {
 
-                    cost_sum += foundObject.cost;
+                    cost_sum += Number(foundObject.cost);
                     value_sum += Number(foundObject.investment_value);
 
                     newObj[fundObj.fund] = {
@@ -185,6 +179,10 @@ export default function ConventionalPortfolio(props) {
                         value: Number(foundObject.investment_value)
                     }
 
+                    oldObj[fundObj.fund] = {
+                        cost: foundObject.cost,
+                        value: Number(foundObject.investment_value)
+                    }
                     // console.log(newObj);
 
                 }
@@ -200,8 +198,8 @@ export default function ConventionalPortfolio(props) {
                     }
                 }
 
-                console.log("new obj", newObj)
-                oldObj = Object.assign({}, newObj);
+                // oldObj = Object.assign({}, newObj);
+                console.log(oldObj);
             });
 
             newObj.portfolio = {
@@ -216,14 +214,27 @@ export default function ConventionalPortfolio(props) {
         setTableData(newArray);
 
     }
-
     const handleStart = () => {
+        const promises = Object.keys(funds_urls).map((item) => TableDataCalc(item));
 
-        Object.keys(funds_urls).map((item) => {
-            TableDataCalc(item);
-        });
+        Promise.all(promises)
+            .then((results) => {
+                const newAllFundData = results.filter(Boolean); // Remove any undefined or null values from results array
+                setAllFundData((oldArray) => [...oldArray, ...newAllFundData]);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
 
-    }
+    // const handleStart = () => {
+
+    //     // Calls TableDataCalc function for each fund's name
+    //     Object.keys(funds_urls).map((item) => {
+    //         TableDataCalc(item);
+    //     });
+
+    // }
 
     return (
         <div>

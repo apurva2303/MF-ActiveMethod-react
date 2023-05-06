@@ -99,6 +99,19 @@ function handle_date_range_change() {
 }
 
 
+// Takes the allFundsData array and returns the largest "data" array:
+const find_largest_array = (array_of_arrays) => {
+    var largest_array = array_of_arrays[0].data;
+    for (let i = 0; i < array_of_arrays.length; i++) {
+        if (largest_array.length < array_of_arrays[i].data.length) {
+            largest_array = array_of_arrays[i].data;
+        }
+    }
+
+    return largest_array;
+}
+
+
 // Exporting all the functions and data
 export {
     funds_urls,
@@ -109,5 +122,6 @@ export {
     check_date_for_holiday,
     check_first_date_of_month,
     handle_date_range_change,
+    find_largest_array
     // click_all_start_buttons
 }
