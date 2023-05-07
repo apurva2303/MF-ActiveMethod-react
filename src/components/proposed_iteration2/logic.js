@@ -59,6 +59,15 @@ async function fetch_NAV(url) {
 
 }
 
+async function fetchAllNAV() {
+    const urls = Object.values(funds_urls);
+    const responses = await Promise.all(urls.map(url => fetch(url)));
+    const jsonData = await Promise.all(responses.map(response => response.json()));
+    return jsonData.map(data => data);
+}
+
+
+
 // Fetching the fund's Name
 async function fetch_fund_name(url) {
 
@@ -166,14 +175,14 @@ function portfolio_redemption(
             let redeemed_units = first_investment_obj.units_bought;
             redeemed_amt += redeemed_units * NAV_of_day;
 
-            // console.log("=========================");
-            // console.log("fund = ", fund);
-            // console.log("popped on = ", date_to_ddmmyyyy(date));
-            // console.log("Today's NAV = ", NAV_of_day);
-            // console.log("Investment of = ", dates_of_active_investments[0]);
-            // console.log("NAV growth = ", total_NAV_growth);
-            // console.log("Transactional NAV growth = ", transaction_level_NAV_growth);
-            // console.log("=========================")
+            console.log("=========================");
+            console.log("fund = ", fund);
+            console.log("popped on = ", date_to_ddmmyyyy(date));
+            console.log("Today's NAV = ", NAV_of_day);
+            console.log("Investment of = ", dates_of_active_investments[0]);
+            console.log("NAV growth = ", total_NAV_growth);
+            console.log("Transactional NAV growth = ", transaction_level_NAV_growth);
+            console.log("=========================")
 
 
             // POP the last transaction from the dates array and fund_transaction_data
@@ -182,9 +191,6 @@ function portfolio_redemption(
             cum_units -= redeemed_units;
 
             if (dates_of_active_investments.length > 0) {
-                console.log(dates_of_active_investments);
-                console.log(fund_transaction_data.data);
-                console.log(date);
                 let NAV_of_next_investment_date = fund_transaction_data.data.find(
                     (obj) => obj.ddmmyyyy === dates_of_active_investments[0]
                 ).NAV_of_day;
@@ -286,5 +292,6 @@ export {
     handle_date_range_change,
     portfolio_redemption,
     fund_redemption,
-    find_largest_array
+    find_largest_array,
+    fetchAllNAV
 }

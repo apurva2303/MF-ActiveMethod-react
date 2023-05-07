@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import {
     funds_urls,
     fund_investment_dates,
-    fetch_NAV,
     date_to_ddmmyyyy,
     check_date_for_holiday,
     check_date_for_investment,
     portfolio_redemption as redemption,
-    find_largest_array
+    find_largest_array,
+    fetchAllNAV,
 } from "./logic.js";
 
 export default function Proposed_2_portfolio() {
@@ -20,8 +20,10 @@ export default function Proposed_2_portfolio() {
     const [tableData, setTableData] = useState([]);
     const [total_nav_growth_check, set_total_nav_growth_check] = useState(0);
     const [transactional_nav_growth_check, set_transactional_nav_growth_check] = useState(0);
+    // const [all_funds_NAV_data, set_all_funds_NAV_data] = useState([]);
 
     const debt_interest_rate = 0.05;
+
 
     // console.log(allFundsData);
 
@@ -35,17 +37,11 @@ export default function Proposed_2_portfolio() {
 
     useEffect(() => {
 
-        if (allFundsData[0] !== undefined) {
+        if (allFundsData.length > 0) {
             populate_table(allFundsData);
         }
-
-        console.log("all funds data", allFundsData)
-
     }, [allFundsData]);
 
-    useEffect(() => {
-        console.log("tableData", tableData);
-    }, [tableData])
 
 
     // Populates the combined table to be displayed on the portfolio page
@@ -79,7 +75,6 @@ export default function Proposed_2_portfolio() {
 
                 }
 
-
             });
 
             new_investment_kitty = ((Number(new_investment_kitty) + Number(portfolio_investment_kitty_contribution))) * (1 + debt_interest_rate / 365);
@@ -102,10 +97,11 @@ export default function Proposed_2_portfolio() {
 
 
     // Function doing all calculations for a fund after the "start" button click
-    const TableDataCalc = async (fund) => {
+    const TableDataCalc = async (fund, all_NAV_data) => {
 
-        const current_fund_url = funds_urls[`${fund}`];
-        const all_NAV_data = await fetch_NAV(current_fund_url);
+        console.log(fund, all_NAV_data)
+        // const current_fund_url = funds_urls[`${fund}`];
+        // const all_NAV_data = await fetch_NAV(current_fund_url);
 
         var month = -1;
         var cost = 0;
@@ -223,6 +219,7 @@ export default function Proposed_2_portfolio() {
             newTableData["data"].push(newObj);
         }
 
+        console.log(newTableData);
         return newTableData;
     }
 
@@ -232,17 +229,28 @@ export default function Proposed_2_portfolio() {
 
         e.preventDefault();
 
-        set_investment_kitty(e.target.investment_kitty.value);
+        const all_funds_NAV_data = await fetchAllNAV();
 
-        const promises = Object.keys(funds_urls).map(async (item) => {
-            const newData = await TableDataCalc(item);
-            return newData;
+        console.log("all_funds_NAV_data", all_funds_NAV_data);
+
+        set_investment_kitty(e.target.investment_kitty.value);
+        const promises = Object.keys(funds_urls).map((item) => {
+            const scheme_code = funds_urls[item].slice(-6);
+            const filtered_corresponding_NAV_data = all_funds_NAV_data.filter(fund_data => fund_data.meta.scheme_code == scheme_code).map(fund_data => fund_data.data)[0];
+
+            return TableDataCalc(item, filtered_corresponding_NAV_data);
+
         });
 
-        const full_data = await Promise.all(promises);
-
-        setAllFundData(full_data);
-
+        Promise.all(promises)
+            .then((results) => {
+                const full_data = results;
+                console.log("full data stored")
+                setAllFundData(full_data);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     }
 
 
@@ -266,11 +274,11 @@ export default function Proposed_2_portfolio() {
             <h1>Proposed Method (2nd Iteration) - Portfolio</h1>
 
             <p>Get the detailed table for:</p>
-            <ul>
+            <ol>
                 {Object.keys(funds_urls).map((item, i) => (
                     <li key={i}><a href={`/proposed2/${item}`}>{item}</a></li>
                 ))}
-            </ul>
+            </ol>
 
             <form onSubmit={handleStart}>
 
