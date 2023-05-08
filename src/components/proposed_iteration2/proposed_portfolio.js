@@ -8,6 +8,7 @@ import {
     portfolio_redemption as redemption,
     find_largest_array,
     fetchAllNAV,
+    debt_interest_rate
 } from "./logic.js";
 
 export default function Proposed_2_portfolio() {
@@ -20,19 +21,10 @@ export default function Proposed_2_portfolio() {
     const [tableData, setTableData] = useState([]);
     const [total_nav_growth_check, set_total_nav_growth_check] = useState(0);
     const [transactional_nav_growth_check, set_transactional_nav_growth_check] = useState(0);
+    const [negative_kitty_dates, set_negative_kitty_dates] = useState([]);
     // const [all_funds_NAV_data, set_all_funds_NAV_data] = useState([]);
 
-    const debt_interest_rate = 0.05;
-
-
     // console.log(allFundsData);
-
-    // If investment kitty goes negative, an alert is thrown, everytime investment_kitty is changed
-    useEffect(() => {
-        if (investment_kitty < 0) {
-            alert("Investment Kitty is running negative!");
-        }
-    }, [investment_kitty]);
 
 
     useEffect(() => {
@@ -43,11 +35,18 @@ export default function Proposed_2_portfolio() {
     }, [allFundsData]);
 
 
+    useEffect(() => {
+        if (negative_kitty_dates.length > 0) {
+            alert("Investment Kitty turned negative on " + negative_kitty_dates[0] + "!")
+        }
+    }, [negative_kitty_dates])
+
 
     // Populates the combined table to be displayed on the portfolio page
     const populate_table = (allFundsData) => {
 
         const newArray = [];
+        const temp_dates_for_negative_kitty = [];
 
         var largest_fund_data = find_largest_array(allFundsData);
         const ddmmyyyyValues = largest_fund_data.map(obj => obj.ddmmyyyy);
@@ -88,18 +87,26 @@ export default function Proposed_2_portfolio() {
                 combined_value: new_investment_kitty + Number(portfolio_value)
             }
 
+            // Check if investment kitty is negative, then put the date in the array dates_for_negative_kitty
+            if (new_investment_kitty < 0) {
+                temp_dates_for_negative_kitty.push(date);
+            }
+
             newArray.push(newObj);
         });
 
-        set_investment_kitty(new_investment_kitty);
+
+        if (temp_dates_for_negative_kitty) {
+            console.log("temp_dates_for_negative_kitty", temp_dates_for_negative_kitty);
+            set_negative_kitty_dates(temp_dates_for_negative_kitty);
+        }
+
         setTableData(newArray);
     }
 
 
     // Function doing all calculations for a fund after the "start" button click
     const TableDataCalc = async (fund, all_NAV_data) => {
-
-        console.log(fund, all_NAV_data)
         // const current_fund_url = funds_urls[`${fund}`];
         // const all_NAV_data = await fetch_NAV(current_fund_url);
 
@@ -219,7 +226,7 @@ export default function Proposed_2_portfolio() {
             newTableData["data"].push(newObj);
         }
 
-        console.log(newTableData);
+        // console.log(newTableData);
         return newTableData;
     }
 
@@ -262,8 +269,17 @@ export default function Proposed_2_portfolio() {
                 <td>{item.portfolio_cost}</td>
                 <td>{item.portfolio_value}</td>
                 <td>{item.portfolio_investment_kitty_contribution}</td>
-                <td>{item.investment_kitty}</td>
-                <td>{item.combined_value}</td>
+                {/* If the values are negative a class changing the color of text to red */}
+                {item.investment_kitty < 0 ?
+                    <td className="text-red">{item.investment_kitty}</td>
+                    :
+                    <td>{item.investment_kitty}</td>
+                }
+                {item.combined_value < 0 ?
+                    <td className="text-red">{item.combined_value}</td>
+                    :
+                    <td>{item.combined_value}</td>
+                }
             </tr>
         )
     });
@@ -309,9 +325,7 @@ export default function Proposed_2_portfolio() {
                     </tr>
                 </thead>
                 <tbody id="portfolio_tbody">
-                    {
-                        DisplayData
-                    }
+                    {DisplayData}
                 </tbody>
             </table>
 

@@ -43,6 +43,8 @@ const fund_investment_dates = {
     "INVESCO_india_PSU_equity_fund": "27"
 }
 
+const debt_interest_rate = 0.05;
+
 // SIP:
 const SIP_amount = 1000;
 
@@ -120,7 +122,7 @@ function check_date_for_investment(fund, date, month, SIP, cost, NAV, cum_units,
         if (month !== date.getMonth()) {
             // If true, Entered into new month
 
-            console.log(fund, " invested on date", date_to_ddmmyyyy(date))
+            // console.log(fund, " invested on date", date_to_ddmmyyyy(date))
             //Invest
             cost += SIP;
             units_bought = SIP / NAV;
@@ -163,7 +165,7 @@ function portfolio_redemption(
     if (total_NAV_growth >= total_NAV_growth_check) {
 
         while (transaction_level_NAV_growth >= transaction_NAV_growth_check) {
-            console.log("redeeming from", dates_of_active_investments);
+            // console.log("redeeming from", dates_of_active_investments);
 
             // redeem the first investment:      
 
@@ -175,14 +177,14 @@ function portfolio_redemption(
             let redeemed_units = first_investment_obj.units_bought;
             redeemed_amt += redeemed_units * NAV_of_day;
 
-            console.log("=========================");
-            console.log("fund = ", fund);
-            console.log("popped on = ", date_to_ddmmyyyy(date));
-            console.log("Today's NAV = ", NAV_of_day);
-            console.log("Investment of = ", dates_of_active_investments[0]);
-            console.log("NAV growth = ", total_NAV_growth);
-            console.log("Transactional NAV growth = ", transaction_level_NAV_growth);
-            console.log("=========================")
+            // console.log("=========================");
+            // console.log("fund = ", fund);
+            // console.log("popped on = ", date_to_ddmmyyyy(date));
+            // console.log("Today's NAV = ", NAV_of_day);
+            // console.log("Investment of = ", dates_of_active_investments[0]);
+            // console.log("NAV growth = ", total_NAV_growth);
+            // console.log("Transactional NAV growth = ", transaction_level_NAV_growth);
+            // console.log("=========================")
 
 
             // POP the last transaction from the dates array and fund_transaction_data
@@ -293,5 +295,6 @@ export {
     portfolio_redemption,
     fund_redemption,
     find_largest_array,
-    fetchAllNAV
+    fetchAllNAV,
+    debt_interest_rate
 }
